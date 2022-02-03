@@ -27,7 +27,7 @@ const resultsWrapper = document.querySelector('.results');
 
 const onInput = async event => {
   const movies = await fetchData(event.target.value);
- 
+
   if (!movies.length) {
     dropdown.classList.remove('is-active');
     return;
@@ -67,7 +67,7 @@ const onInputs = e => {
   if (timeoutId2) clearTimeout(timeoutId2);
   timeoutId2 = setTimeout(() => {
     fetchData(e.target.value);
-     console.log(e.target.value);
+    console.log(e.target.value);
   }, 1000);
 };
 
