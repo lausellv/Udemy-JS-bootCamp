@@ -2,33 +2,30 @@
 createAutoComplete({
   root: document.querySelector('.autocomplete'),
   renderOption(movie) {
-    const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
+   
     return `
-    <img src="${imgSrc}"/>
-<h3><b>${movie.Title} (${movie.Year})</b></h3>
+    <img src="${movie.thumbnailUrl}"/>
+<h3><b>${movie.title} </b></h3>
     `;
   },
   onOptionSelect: movie => onMovieSelect(movie),
 
   inputValue(movie) {
-    return `${movie.Title}
+    return `${movie.title}
     `;
   },
 
   async fetchData(searchTerm) {
-    const response = await axios.get('http://www.omdbapi.com/', {
-      params: {
-        apikey: 'd9835cc5',
-        s: searchTerm
-      }
-    });
+    const response = await axios.get(
+      'https://jsonplaceholder.typicode.com/photos?albumId=1');
 
     // console.log(response.data.Search);
-    if (!response.data.Response) {
-      // if (response.data.Error) // returns a string , therefore, true
-      return [];
-    }
-    return response.data.Search;
+    // if (!response.data.Response) {
+    //   // if (response.data.Error) // returns a string , therefore, true
+    //   return [];
+    // }
+    console.log(response);
+    return response.data;
   }
 });
 
