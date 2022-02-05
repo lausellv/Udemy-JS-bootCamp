@@ -6,7 +6,7 @@ const fetchData = async searchTerm => {
     }
   });
 
-  console.log(response.data);
+  // console.log(response.data.Search);
   if (!response.data.Response) {
     // if (response.data.Error) // returns a string , therefore, true
     return [];
@@ -19,7 +19,7 @@ root.innerHTML = `
 <label><b>Search for a Movie</b></label>
 <input class="input"/>
 <div class="dropdown">
-  <div class="dropdown-menu" id="dropdown-menu" role="menu">
+  <div class="dropdown-menu" >
     <div class="dropdown-content results"></div>
       
   </div>
@@ -29,19 +29,93 @@ root.innerHTML = `
 `;
 const input = document.querySelector('input');
 const dropdown = document.querySelector('.dropdown');
-const resultsWrapper = document.querySelector('.results');  // this will wrap the results
+const resultsWrapper = document.querySelector('.results'); // this will wrap the results
 
 const onInput = async e => {
   const movies = await fetchData(e.target.value);
+
+  if (!movies.length) {
+    dropdown.classList.remove('is-active');
+    return;
+  }
+  resultsWrapper.innerHTML = '';
+  dropdown.classList.add('is-active');
   for (let movie of movies) {
-    // const movies = document.querySelector('.movies');
-    const div = document.createElement('div');
-    div.innerHTML = `
-    <img src="${movie.Poster}"/>
+    const option = document.createElement('a');
+    const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
+    option.classList.add('dropdown-item');
+    option.innerHTML = `
+    <img src="${imgSrc}"/>
 <h3><b>${movie.Title}</b></h3>
     `;
-    document.querySelector('.movies').appendChild(div);
+
+    option.addEventListener('click', () => {
+      dropdown.classList.remove('is-active');
+      console.log(movie.Title);
+      input.value = `${movie.Title}
+      `;
+      onMovieSelect(movie);
+      // do another request
+      // get data
+      // render data
+    });
+    resultsWrapper.appendChild(option);
   }
 };
 
-input.addEventListener('input', debounce3(onInput, 500));
+input.addEventListener('input', debounce(onInput, 500));
+
+document.addEventListener('click', e => {
+  // checking to see if any element outiside of root has been clicked
+  if (!root.contains(e.target)) {
+    dropdown.classList.remove('is-active');
+  }
+});
+
+const onMovieSelect = async movie => {
+  const response = await axios.get('http://www.omdbapi.com/', {
+    params: {
+      apikey: 'd9835cc5',
+      i: movie.imdbID
+    }
+  });
+  console.log(response.data)
+  document.querySelector('#summary').innerHTML = movieTemplate(response.data);
+};
+
+const movieTemplate = movieDetail => {
+  return `
+  <article class="media">
+  <figure class="media-left">
+  <p class="image">
+  <img src="${movieDetail.Poster}"/>
+  </p></figure>
+  <div class="media-content">
+  <div class="content">
+  <h1>${movieDetail.Title}</h1>
+    
+  <h4>${movieDetail.Genre}</h4>
+  <p>
+  ${movieDetail.Plot}</p>
+  </div>
+  </div> 
+  </article>
+  <article class="notification is-primary">
+  <p class="title">${movieDetail.Awards}</p>
+  <p class="subtitle">Awards</p>
+  </article>
+  <article class="notification is-primary">
+  <p class="title">${movieDetail.BoxOffice}</p>
+  <p class="subtitle">BoxOffice</p>
+  </article>  <article class="notification is-primary">
+  <p class="title">${movieDetail.Metascore}</p>
+  <p class="subtitle">Metascore</p>
+  </article>  <article class="notification is-primary">
+  <p class="title">${movieDetail.imdbRating}</p>
+  <p class="subtitle">imdbRating</p>
+  </article>  <article class="notification is-primary">
+  <p class="title">${movieDetail.imdbVotes}</p>
+  <p class="subtitle">imdbVotes</p>
+  </article>
+  `;
+};
