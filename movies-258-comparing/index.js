@@ -96,7 +96,7 @@ const runComparison = () => {
 };
 
 const movieTemplate = movieDetail => {
-  const dollars = movieDetail.BoxOffice.replace(/\$/g, '').replace(/,/g, '');
+  const dollars = movieDetail.BoxOffice.replace(/\$/g, '').replace(/,/g, ''); //https://regexr.com/
   const metascore = movieDetail.Metascore;
   const imdbRating = parseFloat(movieDetail.imdbRating);
   const imdbVotes = movieDetail.imdbVotes.replace(/,/g, '');
