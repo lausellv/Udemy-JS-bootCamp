@@ -1,12 +1,12 @@
 autocompleteConfig = {
-  renderOption(movie) {
+  renderOptions(movie) {
     const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
     return `<img src="${imgSrc}"/><b>${movie.Title} (${movie.Year}</b>)`;
   },
-  inputValue(movie){
-    return movie.Title
+  inputValue(movie) {
+    return movie.Title;
   },
-  async fetchData (searchTerm)  {
+  async fetchData(searchTerm) {
     const response = await axios.get('http://www.omdbapi.com/', {
       params: {
         apikey: 'b7f6c5a6',
@@ -15,35 +15,40 @@ autocompleteConfig = {
     });
     if (response.data.Error) return [];
     return response.data.Search;
- 
   }
-}
+};
 
 createAutocomplete({
+  // these are common to both in this API, that's why we use the spread operator
   ...autocompleteConfig,
-  root: document.querySelector('#left-autocomplete'),
-  onOptionSelect(movie) {
-     document.querySelector(".tutorial").classList.add("is-hidden")
 
-    onMovieSelect(movie, document.querySelector("#left-summary"));
-   
+  // these are customized
+  root: document.querySelector('#left-autocomplete'),
+
+  // how to extract this code that both columns/sides share
+  onOptionSelect(movie) {
+    //  document.querySelector(".tutorial").classList.add("is-hidden")
+    hideTutorial();
+    // This is a third leg (see below)
+    onMovieSelect(movie, document.querySelector('#left-summary'));
   }
-  
 });
 
 createAutocomplete({
   ...autocompleteConfig,
   root: document.querySelector('#right-autocomplete'),
   onOptionSelect(movie) {
-    document.querySelector(".tutorial").classList.add("is-hidden")
-    rightSide = document.querySelector("#right-summary")  // this where we select the side
 
-   onMovieSelect(movie, rightSide);
+    hideTutorial();
+    
+    rightSide = document.querySelector('#right-summary'); 
+    onMovieSelect(movie, rightSide);
+  }
+});
 
-  
-}});
-
-
+const hideTutorial = () => {
+  document.querySelector('.tutorial').classList.add('is-hidden');
+};
 
 const onMovieSelect = async ({ imdbID }, elementSide) => {
   const response = await axios.get('http://www.omdbapi.com/', {
@@ -53,7 +58,7 @@ const onMovieSelect = async ({ imdbID }, elementSide) => {
     }
   });
   console.log(response.data);
-  // document.querySelector(elementSide).innerHTML = movieTemplate(response.data);  // we no longer need to select the side. 
+  // document.querySelector(elementSide).innerHTML = movieTemplate(response.data);  // we no longer need to select the side.
   elementSide.innerHTML = movieTemplate(response.data);
 };
 

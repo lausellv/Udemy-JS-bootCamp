@@ -1,5 +1,5 @@
 // the argument is going to be a (config) object
-const createAutocomplete = ({root, renderOption, onOptionSelect, inputValue , fetchData})=>{
+const createAutocomplete = ({root, renderOptions, onOptionSelect, inputValue , fetchData})=>{
 
   
 
@@ -28,8 +28,8 @@ const createAutocomplete = ({root, renderOption, onOptionSelect, inputValue , fe
     for (let item of items) {
       const option = document.createElement('a');
       option.classList.add('dropdown-item');
-      option.innerHTML = renderOption(item)  // specific HTML rendering instructions go out (are extracted) / not reusable
-      
+      option.innerHTML = renderOptions(item)  // specific HTML rendering instructions go out (are extracted) / not reusable
+      resultsWrapper.appendChild(option);
       
   
       option.addEventListener('click', e => {
@@ -41,7 +41,6 @@ const createAutocomplete = ({root, renderOption, onOptionSelect, inputValue , fe
         //   const response = await axios.get('http://www.omdbapi.com/', movie.imdbID)
         // console.log(movieInfo)
       });
-      resultsWrapper.appendChild(option);
     }
   };
   
