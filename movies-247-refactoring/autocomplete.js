@@ -45,7 +45,7 @@ const createAutocomplete = ({root, renderOptions, onOptionSelect, inputValue , f
   };
   
   // to search items
-  input.addEventListener('input', debounce(onInput, 500)); // we are passing the onInput function as the second argument to addEventListener
+  input.addEventListener('input', debounce2(onInput, 500)); // we are passing the onInput function as the second argument to addEventListener
   // debounce is sent to utils
   
   // when clicking outside the root menu the dropdown menu dissapears
